@@ -1,0 +1,968 @@
+openapi: 3.0.0
+info:
+  title: Api
+  version: '1.0'
+  description: Wallcome to Payplus Api
+servers:
+  - url: 'http://localhost:8020/api'
+paths:
+  /api_user/login:
+    post:
+      summary: Get User Token
+      operationId: post-api_user-login
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: 'status = 200 (success) | other (failure)'
+                  token:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+            examples: {}
+        description: ''
+      description: Login to system and get token for one time useLogin to system and get token for one time use
+      tags:
+        - login
+  /api__transaction/request:
+    post:
+      summary: Transaction Request
+      operationId: post-api__transaction-request
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: '(success | reject)'
+                  message:
+                    type: object
+                    properties:
+                      status_code:
+                        type: string
+                        description: '(0 = success | other = failure)'
+                      en:
+                        type: string
+                      he:
+                        type: string
+                  response:
+                    type: object
+                    properties:
+                      status_code:
+                        type: string
+                        description: '(0 = success | other = failure)'
+                      brand:
+                        type: string
+                      defrayed:
+                        type: string
+                      service_code:
+                        type: string
+                      param_j:
+                        type: string
+                      card_expiration_date:
+                        type: string
+                      card_company_res_id:
+                        type: string
+                      card_company_res_cvv:
+                        type: string
+                      amount:
+                        type: string
+                      more_info:
+                        type: string
+                      amount_by_starts:
+                        type: string
+                      card_company_code:
+                        type: string
+                      transaction_type:
+                        type: string
+                      credit_terms:
+                        type: string
+                      ucaf_or_cavv:
+                        type: string
+                      transaction_code:
+                        type: string
+                      club_code:
+                        type: string
+                      reason_for_connection:
+                        type: string
+                      num_of_payments:
+                        type: string
+                      payment_first_amount:
+                        type: string
+                      file_number:
+                        type: string
+                      cashier_num:
+                        type: string
+                      voucher_id:
+                        type: string
+                      card_name:
+                        type: string
+                      card_out_of_country:
+                        type: string
+                      user_data:
+                        type: string
+                      card_number:
+                        type: string
+                      card_number_enc:
+                        type: string
+                      currency_iso:
+                        type: string
+                      info:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          customer_id:
+                            type: string
+                          email:
+                            type: string
+                          phone:
+                            type: string
+                          crn:
+                            type: string
+                      source_approval:
+                        type: string
+                      auth_number:
+                        type: string
+                      token:
+                        type: string
+              examples:
+                example:
+                  value:
+                    status: success
+                    message:
+                      status_code: 0
+                      en: Successful transaction.
+                      he: עסקה תקינה.
+                    response:
+                      status_code: 0
+                      brand: '2'
+                      defrayed: '6'
+                      service_code: '000'
+                      param_j: '5'
+                      card_expiration_date: '1121'
+                      card_company_res_id: '3'
+                      card_company_res_cvv: '0'
+                      amount: '10'
+                      more_info: '        '
+                      amount_by_stars: 0
+                      card_company_code: '6'
+                      transaction_type: '01'
+                      credit_terms: 1
+                      ucaf_or_cavv: '0'
+                      transaction_code: '50'
+                      club_code: ' '
+                      reason_for_connection: '5'
+                      num_of_payments: '1'
+                      payment_first_amount: 0
+                      payment_non_first_amount: 0
+                      file_number: '11'
+                      cashier_num: '111'
+                      cashier_counter_id: '111'
+                      voucher_id: 11-111-111
+                      card_name: 'ויזה MAX       '
+                      card_out_of_country: '0'
+                      user_data: comment
+                      card_number: XXXX-1111
+                      card_number_enc: 11111111-1111-1111-1111-11111111
+                      currency_iso: ILS
+                      info:
+                        name: te2
+                        customer_id: '234526'
+                        email: te11st@test.co.il
+                        phone: '000100000000'
+                        crn: '2212'
+                      source_approval: '2'
+                      auth_number: '111111'
+                      token: 1111111-1111-1111-1111-111111
+      description: Transaction request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request:
+                  type: object
+                  properties:
+                    credit_card:
+                      type: object
+                      required:
+                        - number
+                      properties:
+                        number:
+                          type: string
+                          description: '(if token add "K" at start)'
+                        exp_mm:
+                          type: string
+                        exp_yy:
+                          type: string
+                        cvv:
+                          type: string
+                        auth_number:
+                          type: string
+                        holder:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                    beneficiary:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        phone:
+                          type: string
+                        crn:
+                          type: string
+                    amoun:
+                      type: number
+                    currency:
+                      type: string
+                      description: (currency ISO code)
+                    payments:
+                      type: object
+                      required:
+                        - number
+                      properties:
+                        number:
+                          type: number
+                        first_amount:
+                          type: number
+                          description: '(required if payments number > 1)'
+                        nonfirst_amount:
+                          type: number
+                          description: '(required if payments number > 1)'
+                    transaction_type:
+                      type: string
+                      description: '(transaction_type 01 charge | 51 refund)'
+                      enum:
+                        - '01'
+                        - '51'
+                    paramJ:
+                      type: string
+                      description: '(paramJ = 2 check | 4 credit | 5 approve)'
+                      enum:
+                        - '2'
+                        - '4'
+                        - '5'
+                    block_duplicate_transaction:
+                      type: boolean
+                    comment:
+                      type: string
+                    credit_terms:
+                      type: string
+                    print_comment:
+                      type: string
+                  required:
+                    - credit_card
+                    - amoun
+                    - currency
+                    - payments
+                    - transaction_type
+                    - paramJ
+                    - block_duplicate_transaction
+                cashier:
+                  type: string
+                  description: (casheir number)
+              required:
+                - cashier
+            examples:
+              example:
+                value:
+                  request:
+                    credit_card:
+                      number: '************'
+                      exp_mm: '11'
+                      exp_yy: '21'
+                      cvv: '000'
+                      auth_number: null
+                      holder:
+                        id: '12345678'
+                    beneficiary:
+                      name: te
+                      email: test@test.co.il
+                      phone: '00000000000'
+                      crn: '1234567'
+                    amount: '1'
+                    currency: ILS
+                    payments:
+                      number: '1'
+                      first_amount: null
+                      nonfirst_amount: null
+                    transaction_type: '01'
+                    paramJ: '4'
+                    block_duplicate_transaction: false
+                    comment: comment
+                    crdit_terms: 1
+                    print_comment: print comment
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: token
+          description: user token
+          required: true
+      tags:
+        - transactions
+  /api_customers/create:
+    post:
+      summary: Create Customer
+      operationId: post-api_customers-create
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "(200 = 'success' | other = 'failure')"
+                  customer:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      customer_id:
+                        type: string
+                      customer_personal_id:
+                        type: string
+                      customer_name:
+                        type: string
+                      phone:
+                        type: string
+                      phone2:
+                        type: string
+                      email:
+                        type: string
+                      address:
+                        type: string
+                      city:
+                        type: string
+                      zip_code:
+                        type: string
+                      notes:
+                        type: string
+                      file_name:
+                        type: string
+                      payment_type:
+                        type: string
+                      business_type:
+                        type: string
+                      section_46:
+                        type: string
+                      contact_full_name:
+                        type: string
+                      bank:
+                        type: string
+                      branch:
+                        type: string
+                      account_number:
+                        type: string
+                  message:
+                    type: string
+                    description: '(if status != 200)'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: token
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer:
+                  type: object
+                  properties:
+                    customer_id:
+                      type: string
+                      description: (self personal reconize)
+                    customer_personal_id:
+                      type: string
+                      description: (id/company number.....)
+                    customer_name:
+                      type: string
+                    phone:
+                      type: string
+                    phone2:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+                    address:
+                      type: string
+                    zip_code:
+                      type: string
+                    notes:
+                      type: string
+                    file_name:
+                      type: string
+                    payment_type:
+                      type: string
+                      enum:
+                        - cash
+                        - fluent
+                        - monthly_30_days
+                        - fluent_plus_30
+                        - fluent_plus_60
+                    business_type:
+                      type: string
+                      enum:
+                        - authorized_dealer
+                        - deals_with_exemption
+                        - company_ltd
+                        - association
+                    section_46:
+                      type: boolean
+                      description: "(if business_type = 'association')"
+                    contact_full_name:
+                      type: string
+                    bank:
+                      type: string
+                    branch:
+                      type: string
+                      description: (bank branch)
+                    account_number:
+                      type: string
+                  required:
+                    - customer_id
+                    - customer_personal_id
+                    - customer_name
+                    - email
+                    - contact_full_name
+      tags:
+        - customers
+  /api_customers/update:
+    post:
+      summary: Update Customer
+      operationId: post-api_customers-update
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "(200 = 'success' | other = 'failure')"
+                  customer:
+                    type: object
+                  message:
+                    type: string
+                    description: '(if status != 200)'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: token
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                customer_id:
+                  type: string
+                  description: (self personal reconize)
+                customer_personal_id:
+                  type: string
+                  description: (id/company number.....)
+                customer_name:
+                  type: string
+                phone:
+                  type: string
+                phone2:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                address:
+                  type: string
+                zip_code:
+                  type: string
+                notes:
+                  type: string
+                file_name:
+                  type: string
+                payment_type:
+                  type: string
+                  enum:
+                    - cash
+                    - fluent
+                    - monthly_30_days
+                    - fluent_plus_30
+                    - fluent_plus_60
+                business_type:
+                  type: string
+                  enum:
+                    - cash
+                    - fluent
+                    - monthly_30_days
+                    - fluent_plus_30
+                    - fluent_plus_60
+                section_46:
+                  type: string
+                  description: "(if business_type = 'association')"
+                contact_full_name:
+                  type: string
+                bank:
+                  type: string
+                branch:
+                  type: string
+                  description: (bank branch)
+                account_number:
+                  type: string
+              required:
+                - id
+                - customer_id
+                - customer_personal_id
+                - customer_name
+                - email
+                - contact_full_name
+      tags:
+        - customers
+  /api_customers/remove:
+    post:
+      summary: Remove Customer
+      operationId: post-api_customers-remove
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "(200 = 'success' | other = 'failure')"
+                  message:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+              required:
+                - id
+        description: ''
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: token
+          required: true
+      tags:
+        - customers
+  /api_recurring_payments/create:
+    post:
+      summary: Create Recurring Payments
+      operationId: post-api_recurring_payments-create
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "(200 = 'success' | other = 'failure')"
+                  payment:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      recurring_payment_customer_id:
+                        type: string
+                      card_holder_id:
+                        type: string
+                      exp_mm:
+                        type: string
+                      exp_yy:
+                        type: string
+                      amount_per_month:
+                        type: string
+                      notes:
+                        type: string
+                      card_holder_name:
+                        type: string
+                      auth_number:
+                        type: string
+                      start_at:
+                        type: string
+                      payments:
+                        type: string
+                      payment_cycle:
+                        type: string
+                      currency_iso:
+                        type: string
+                      vat:
+                        type: string
+                      mail_customer_failed:
+                        type: string
+                      payment_cycle_type:
+                        type: string
+                      token:
+                        type: string
+                  message:
+                    type: object
+                    description: '(if status != 200)'
+                    properties:
+                      status_code:
+                        type: string
+                      he:
+                        type: string
+                      en:
+                        type: string
+      tags:
+        - recurring payments
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: token
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment:
+                  type: object
+                  properties:
+                    recurring_payment_customer_id:
+                      type: string
+                      description: (created customer id)
+                    card_holder_name:
+                      type: string
+                    card_holder_id:
+                      type: string
+                    card_number:
+                      type: string
+                    exp_mm:
+                      type: string
+                    exp_yy:
+                      type: string
+                    amount_per_month:
+                      type: number
+                    notes:
+                      type: string
+                    auth_number:
+                      type: string
+                    start_at:
+                      type: string
+                      format: date
+                      example: YYYY-MM-DD
+                    payments:
+                      type: number
+                      default: 0
+                    payment_cycle_type:
+                      type: string
+                      enum:
+                        - month
+                        - day
+                      default: month
+                    payment_cycle:
+                      type: number
+                      default: 1
+                    currency_iso:
+                      type: string
+                      description: '(ILS, USD...)'
+                      default: '1'
+                    vat:
+                      type: boolean
+                      description: (default = false)
+                      default: 'false'
+                    mail_customer_failed:
+                      type: boolean
+                      description: (default = false)
+                      default: 'false'
+                    firstPayment:
+                      type: object
+                      properties:
+                        show:
+                          type: boolean
+                          description: (default = false)
+                          default: 'false'
+                        amount:
+                          type: number
+                        date:
+                          type: string
+                          format: date
+                          example: YYYY-MM-DD
+                  required:
+                    - recurring_payment_customer_id
+                    - card_number
+                    - exp_mm
+                    - exp_yy
+                    - amount_per_month
+            examples:
+              example:
+                value:
+                  payment:
+                    recurring_payment_customer_id: 24
+                    card_holder_name: ''
+                    card_holder_id: ''
+                    card_number: '111111111111111'
+                    exp_mm: '11'
+                    exp_yy: '21'
+                    amount_per_month: '1'
+                    notes: hellop
+                    auth_number: '12345'
+                    start_at: '2020-07-27'
+                    payments: 0
+                    payment_cycle_type: month
+                    payment_cycle: 1
+                    currency_iso: ILS
+                    vat: false
+                    mail_customer_failed: false
+                    firstPayment:
+                      show: false
+                      amount: 0
+                      date: '2020-07-27'
+  /api_recurring_payments/update:
+    post:
+      summary: ''
+      operationId: post-api_recurring_payments-update
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "(200 = 'success' | other = 'failure')"
+                  payment:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      recurring_payment_customer_id:
+                        type: string
+                      card_holder_id:
+                        type: string
+                      exp_mm:
+                        type: string
+                      exp_yy:
+                        type: string
+                      amount_per_month:
+                        type: string
+                      notes:
+                        type: string
+                      card_holder_name:
+                        type: string
+                      auth_number:
+                        type: string
+                      start_at:
+                        type: string
+                      payments:
+                        type: string
+                      payment_cycle:
+                        type: string
+                      currency_iso:
+                        type: string
+                      vat:
+                        type: string
+                      mail_customer_failed:
+                        type: string
+                      payment_cycle_type:
+                        type: string
+                      token:
+                        type: string
+                  message:
+                    type: object
+                    description: '(if status != 200)'
+                    properties:
+                      status_code:
+                        type: string
+                      he:
+                        type: string
+                      en:
+                        type: string
+        responses: null
+      tags:
+        - recurring payments
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: token
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    recurring_payment_customer_id:
+                      type: string
+                      description: (created customer id)
+                    card_holder_name:
+                      type: string
+                    card_holder_id:
+                      type: string
+                    card_number:
+                      type: string
+                    exp_mm:
+                      type: string
+                    exp_yy:
+                      type: string
+                    amount_per_month:
+                      type: number
+                    notes:
+                      type: string
+                    auth_number:
+                      type: string
+                    start_at:
+                      type: string
+                      format: date
+                      example: YYYY-MM-DD
+                    payments:
+                      type: number
+                      default: 0
+                    payment_cycle_type:
+                      type: string
+                      enum:
+                        - month
+                        - day
+                      default: month
+                    payment_cycle:
+                      type: number
+                      default: 1
+                    currency_iso:
+                      type: string
+                      description: '(ILS, USD...)'
+                      default: '1'
+                    vat:
+                      type: boolean
+                      description: (default = false)
+                      default: 'false'
+                    mail_customer_failed:
+                      type: boolean
+                      description: (default = false)
+                      default: 'false'
+                    firstPayment:
+                      type: object
+                      properties:
+                        show:
+                          type: boolean
+                          description: (default = false)
+                          default: 'false'
+                        amount:
+                          type: number
+                        date:
+                          type: string
+                          format: date
+                          example: YYYY-MM-DD
+                  required:
+                    - recurring_payment_customer_id
+                    - card_number
+                    - exp_mm
+                    - exp_yy
+                    - amount_per_month
+            examples:
+              example:
+                value:
+                  payment:
+                    recurring_payment_customer_id: 24
+                    card_holder_name: ''
+                    card_holder_id: ''
+                    card_number: '111111111111111'
+                    exp_mm: '11'
+                    exp_yy: '21'
+                    amount_per_month: '1'
+                    notes: hellop
+                    auth_number: '12345'
+                    start_at: '2020-07-27'
+                    payments: 0
+                    payment_cycle_type: month
+                    payment_cycle: 1
+                    currency_iso: ILS
+                    vat: false
+                    mail_customer_failed: false
+                    firstPayment:
+                      show: false
+                      amount: 0
+                      date: '2020-07-27'
+  /api_recurring_payments/remove:
+    post:
+      summary: ''
+      operationId: post-api_recurring_payments-remove
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: token
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+              required:
+                - id
+        description: ''
+      tags:
+        - recurring payments
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      properties:
+        id:
+          type: string
+  securitySchemes: {}
