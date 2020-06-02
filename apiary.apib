@@ -5,16 +5,494 @@ HOST: https://apidev.payplus.co.il
 
 Polls is a simple API allowing consumers to view polls and vote in them.
 
-## Logs [/logs/test]
+## Users [/api_user/login]
 
-### Test Logs [POST]
+Login to system and get token for one time useLogin to system and get token for one time use
+
+### Get User Token [POST]
 
 + Request (application/json)
     
-+ Parameters (object)
-    + id (string, required)
-    + created (number) - Time stamp
-    + percent_off (number)
-    + redeem_by (number) - Date after which the coupon can no longer be redeemed
+    + Attributes
+    
+        + email: test@test.com (string)
+        + password: 123456 (string)
     
 + Response 200 (application/json)
+
+  + Attributes
+    
+        + status (string)
+            status = 200 (success) | other (failure)
+        + token (string)
+        
+
+## Transaction [/api_transaction/request]
+
+### Transaction Request [POST]
+
++ Request (application/json)
+        + Headers
+            token: Login Token
+
+
+    + Attributes
+        + request (object)
+            + credit_card (object)
+                + number: ************* (string)
+                    if token add "K" at start
+                + exp_mm: 11 (string, optional)
+                + exp_yy: 21 (string, optional)
+                + cvv: 000 (string, optional)
+                + auth_number(string, optional)
+                + holder (object, optional) 
+                    + id: 12345678 (string, optional)
+            + beneficiary (object)
+                + name: te (string, optional)
+                + email: test@test.co.il (string, optional)
+                + phone: 00000000000 (string, optional)
+                + crn: 1234567 (string, optional)
+            + amount: 10 (number)
+            + currency: ILS (string)
+                (currency ISO code)
+            + payments (object)
+                + number: 1 (number)
+                + first_amount (number, optional)
+                    required if payments number > 1
+                + nonfirst_amount (number, optional)
+                    required if payments number > 1
+            + transaction_type: 51 (enum)
+                + 01 (string)
+                    charge
+                + 51 (string)
+                    refund
+            + paramJ: 2 (enum)
+                + 2 (string)
+                    check
+                + 4 (string)
+                    credit
+                + 5 (string)
+                    approve
+            + block_duplicate_transaction: false (boolean)
+            + comment: comment (string, optional)
+            + credit_terms: 1 (string, optional)
+            + print_comment: print_comment (string, optional)
+        + cashier: 01 (string)
+    
++ Response 200 (application/json)
+    + Attributes
+        + status: success (string)
+            (success | reject)
+        + message (object)
+            + status_code: 0 (string)
+                0 =success | other = failure
+            + en: Successful transaction. (string)
+            + he: עסקה תקינה. (string)
+        + response (object)
+            + status_code: 0 (string)
+                0 =success | other = failure
+            + brand: 2 (string)
+            + defrayed: 6 (string)
+            + service_code: 000 (string)
+            + param_j: 5 (string)
+            + card_expiration_date: 1121 (string)
+            + card_company_res_id: 3 (string)
+            + card_company_res_cvv: 0 (string)
+            + amount: 10 (string)
+            + more_info (string)
+            + amount_by_starts: 0 (string)
+            + card_company_code: 6 (string)
+            + transaction_type: 01 (string)
+            + credit_terms: 1 (string)
+            + ucaf_or_cavv: 0 (string)
+            + transaction_code: 50 (string)
+            + club_code (string)
+            + reason_for_connection: 5 (string)
+            + num_of_payments: 1 (string)
+            + payment_first_amount: 10 (string)
+            + payment_non_first_amount: 0 (string)
+            + file_number: 11 (string)
+            + cashier_num: 111 (string)
+            + cashier_counter_id: 111 (string)
+            + voucher_id: 11-111-11  (string)
+            + card_name: ויזה MAX (string)
+            + card_out_of_country: 0 (string)
+            + user_data: comment (string)
+            + card_number: XXXX-1111 (string)
+            + card_number_enc: 11111111-1111-1111-1111-11111111 (string)
+            + currency_iso: ILS (string)
+            + info (object) 
+                + name: TE2 (string)
+                + customer_id: 234526 (string)
+                + email: te11st@test.co.il (string)
+                + phone: 000100000000 (string)
+                + crn: 2212 (string)
+            + source_approval: 2 (string)
+            + auth_number: 111111 (string)
+            + token: 1111111-1111-1111-1111-111111 (string)
+ 
+ 
+# Group Customers   
+            
+## Create Customers [/api_customers/create/]
+
+### Create Customer [POST]
+
++ Request (application/json)
+        + Headers
+            token: Login Token
+        
+    + Attributes
+    
+        + customer (object)
+            + customer_id (string)
+                self personal reconize
+            + customer_personal_id (string)
+                id/company number/....
+            + customer_name (string)
+            + phone (string, optional)
+            + phone2 (string, optional)
+            + email (string)
+            + address (string, optional)
+            + zip_code (string, optional)
+            + notes (string, optional)
+            + file_name (string, optional)
+            + payment_type (enum, optional)
+                + cash (string)
+                + fluent (string)
+                + monthly_30_days (string)
+                + fluent_plus_30 (string)
+                + fluent_plus_60 (string)
+            + business_type (enum, optional)
+                + authorized_dealer (string)
+                + deals_with_exemption (string)
+                + company_ltd (string)
+                + association (string)
+            + section_46 (boolean, optional)
+                if business_type = association
+            + contact_full_name (string)
+            + bank (string, optional)
+            + branch (string, optional)
+                bank branch
+            + account_number (string, optional)
+            
++ Response 200 (application/json)
+
+  + Attributes
+    
+        + status (string)
+            200 = success | other = failure
+        + message (string)
+            if status != 200
+        + customer (object)
+            + id (string)
+            + customer_id (string)
+            + customer_personal_id (string)
+            + customer_name (string)
+            + phone (string)
+            + phone2 (string)
+            + email (string)
+            + address (string)
+            + zip_code (string)
+            + notes (string)
+            + file_name (string)
+            + payment_type (string)
+            + business_type (string)
+            + section_46 (boolean)
+            + contact_full_name (string)
+            + bank (string)
+            + branch (string)
+            + account_number (string)
+        
+        
+## Update Customers [/api_customers/update/]
+
+### Update Customer [POST]
+
++ Request (application/json)
+        + Headers
+            token: Login Token
+        
+    + Attributes
+    
+        + id (string)
+        + customer_id (string)
+            self personal reconize
+        + customer_personal_id (string)
+            id/company number/....
+        + customer_name (string)
+        + phone (string, optional)
+        + phone2 (string, optional)
+        + email (string)
+        + address (string, optional)
+        + zip_code (string, optional)
+        + notes (string, optional)
+        + file_name (string, optional)
+        + payment_type (enum, optional)
+            + cash (string)
+            + fluent (string)
+            + monthly_30_days (string)
+            + fluent_plus_30 (string)
+            + fluent_plus_60 (string)
+        + business_type (enum, optional)
+            + authorized_dealer (string)
+            + deals_with_exemption (string)
+            + company_ltd (string)
+            + association (string)
+        + section_46 (boolean, optional)
+            if business_type = association
+        + contact_full_name (string)
+        + bank (string, optional)
+        + branch (string, optional)
+            bank branch
+        + account_number (string, optional)
+            
+            
++ Response 200 (application/json)
+
+  + Attributes
+    
+        + status (string)
+            200 = success | other = failure
+        + message (string)
+            if status != 200
+        + customer (object)
+            + id (string)
+            + customer_id (string)
+            + customer_personal_id (string)
+            + customer_name (string)
+            + phone (string)
+            + phone2 (string)
+            + email (string)
+            + address (string)
+            + zip_code (string)
+            + notes (string)
+            + file_name (string)
+            + payment_type (string)
+            + business_type (string)
+            + section_46 (boolean)
+            + contact_full_name (string)
+            + bank (string)
+            + branch (string)
+            + account_number (string)
+
+        
+        
+## Remove Customers [/api_customers/remove/]
+
+### Remove Customer [POST]
+
++ Request (application/json)
+        + Headers
+                token: Login Token
+                
+    + Attributes
+    
+        + id: 1 (string)
+    
++ Response 200 (application/json)
+
+  + Attributes
+    
+         + status (string)
+            200 = success | other = failure
+         + message (string)
+            if status != 200
+            
+            
+            
+# Group Recurring Payment   
+            
+## Create Recurring Payment [/api_recurring_payments/create/]
+
+### Create Recurring Payment [POST]
+
++ Request (application/json)
+        + Headers
+            token: Login Token
+        
+    + Attributes
+    
+        + payment (object)
+            + recurring_payment_customer_id: 24 (string)
+                created customer id
+            + card_holder_name (string, optional)
+            + card_holder_id (string, optional)
+            + card_number: 111111111111 (string)
+            + exp_mm: 11 (string)
+            + exp_yy: 21 (string)
+            + amount_per_month: 1 (number)
+            + notes: hello (string, optional)
+            + auth_number: 12345 (string, optional)
+            + start_at: 2020-07-27 (string, optional)
+            + payments: 0 (string, optional)
+                + Default: 0
+            + payment_cycle_type: month (enum, optional)
+                + month (string)
+                + day (string)
+                
+                + Default: month
+            + payment_cycle: 1 (number, optional)
+                + Default: 1
+            + currency_iso: ILS (string, optional)
+                
+                + Default: ILS
+            + vat: false (boolean, optional)
+                + Default: false
+            + mail_customer_failed: false (boolean, optional)
+                + Default: false
+            + firstPayment (object)
+                + show: false (boolean, optional)
+                    + Default: false
+                + amount: 0 (number, optional)
+                + date: 2020-07-27 (string, optional)
+            
++ Response 200 (application/json)
+
+  + Attributes
+    
+        + status (string)
+            200 = success | other = failure
+        + message (object)
+            if status != 200
+            + status_code: 0 (string)
+                0 =success | other = failure
+            + en: Successful transaction. (string)
+            + he: עסקה תקינה. (string)
+        + payment (object)
+            + id: 2 (string)
+            + recurring_payment_customer_id: 24 (string)
+            + card_holder_name (string, optional)
+            + card_holder_id (string, optional)
+            + exp_mm: 11 (string)
+            + exp_yy: 21 (string)
+            + amount_per_month: 1 (number)
+            + notes: hello (string)
+            + auth_number: 12345 (string)
+            + start_at: 2020-07-27 (string)
+            + payments: 0 (string)
+                + Default: 0
+            + payment_cycle_type: month (enum)
+                + month (string)
+                + day (string)
+                
+                + Default: month
+            + payment_cycle: 1 (number, optional)
+                + Default: 1
+            + currency_iso: ILS (string, optional)
+                
+                + Default: ILS
+            + vat: false (boolean, optional)
+                + Default: false
+            + mail_customer_failed: false (boolean, optional)
+                + Default: false
+            + token (string)
+        
+## Update Recurring Payment [/api_recurring_payments/update/]
+
+### Update Recurring Payment [POST]
+
++ Request (application/json)
+        + Headers
+            token: Login Token
+        
+    + Attributes
+
+        + payment (object)
+            + id (string)
+            + recurring_payment_customer_id: 24 (string)
+                created customer id
+            + card_holder_name (string, optional)
+            + card_holder_id (string, optional)
+            + card_number: 111111111111 (string)
+            + exp_mm: 11 (string)
+            + exp_yy: 21 (string)
+            + amount_per_month: 1 (number)
+            + notes: hello (string, optional)
+            + auth_number: 12345 (string, optional)
+            + start_at: 2020-07-27 (string, optional)
+            + payments: 0 (string, optional)
+                + Default: 0
+            + payment_cycle_type: month (enum, optional)
+                + month (string)
+                + day (string)
+                
+                + Default: month
+            + payment_cycle: 1 (number, optional)
+                + Default: 1
+            + currency_iso: ILS (string, optional)
+                
+                + Default: ILS
+            + vat: false (boolean, optional)
+                + Default: false
+            + mail_customer_failed: false (boolean, optional)
+                + Default: false
+            + firstPayment (object)
+                + show: false (boolean, optional)
+                    + Default: false
+                + amount: 0 (number, optional)
+                + date: 2020-07-27 (string, optional)
+            
+            
++ Response 200 (application/json)
+
+  + Attributes
+    
+         + status (string)
+            200 = success | other = failure
+        + message (object)
+            if status != 200
+            + status_code: 0 (string)
+                0 =success | other = failure
+            + en: Successful transaction. (string)
+            + he: עסקה תקינה. (string)
+        + payment (object)
+            + id: 2 (string)
+            + recurring_payment_customer_id: 24 (string)
+            + card_holder_name (string, optional)
+            + card_holder_id (string, optional)
+            + exp_mm: 11 (string)
+            + exp_yy: 21 (string)
+            + amount_per_month: 1 (number)
+            + notes: hello (string)
+            + auth_number: 12345 (string)
+            + start_at: 2020-07-27 (string)
+            + payments: 0 (string)
+                + Default: 0
+            + payment_cycle_type: month (enum)
+                + month (string)
+                + day (string)
+                
+                + Default: month
+            + payment_cycle: 1 (number, optional)
+                + Default: 1
+            + currency_iso: ILS (string, optional)
+                
+                + Default: ILS
+            + vat: false (boolean, optional)
+                + Default: false
+            + mail_customer_failed: false (boolean, optional)
+                + Default: false
+            + token (string)
+        
+        
+## Remove Recurring Payment [/api_recurring_payments/remove/]
+
+### Remove Recurring Payment [POST]
+
++ Request (application/json)
+        + Headers
+                token: Login Token
+                
+    + Attributes
+    
+        + id: 1 (string)
+    
++ Response 200 (application/json)
+
+  + Attributes
+    
+         + status (string)
+            200 = success | other = failure
+         + message (string)
+            if status != 200
